@@ -20,6 +20,12 @@ const User = sequelize.define('users', {
       type: Sequelize.STRING,
       allowNull: false,
    },
+   money: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 100000,
+  },
+   
 });
 
 export default User;
