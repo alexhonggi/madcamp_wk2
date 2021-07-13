@@ -18,7 +18,7 @@ const Good = sequelize.define('goods', {
         defaultValue: 0,
     },
 }, {
-    timestamps: false,
+    timestamps: true,
     paranoid: true,
 });
 

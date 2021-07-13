@@ -12,6 +12,9 @@ const Auction = sequelize.define('auctions', {
         type: Sequelize.STRING(100),
         allowNull: true,
     },
+}, {
+    timestamps: true,
+    paranoid:true,
 });
 
 export default Auction;
