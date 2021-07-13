@@ -1,32 +1,33 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import mysql from 'mysql2';
-import fs from 'fs';
-import multer from 'multer';
-import * as path from 'path';
-import { signup, login, isAuth } from '../controllers/auth.js';
-import Good from '../models/good.js';
-import Auction from '../models/auction.js';
-import User from '../models/user.js';
-import schedule from 'node-schedule';
+// import express from 'express';
+// import bodyParser from 'body-parser';
+// import mysql from 'mysql2';
+// import fs from 'fs';
+// import multer from 'multer';
+// import * as path from 'path';
+// import { signup, login, isAuth } from '../controllers/auth.js';
+// import Good from '../models/good.js';
+// import Auction from '../models/auction.js';
+// import User from '../models/user.js';
+// import schedule from 'node-schedule';
 
-// const express = require('express');
-// const multer = require('multer');
-// const path = require('path');
-// const fs = require('fs');
-// const schedule = require('node-schedule');
-// const mysql = require('mysql2');
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const schedule = require('node-schedule');
+const mysql = require('mysql2');
 // const bodyParser = require('body-parser');
-// const { signup, login, isAuth } = '../con'
+// const { signup, login, isAuth } = '../auth.js';
+const { Good, Auction, User, sequelize } = require('../models');
+// const loginuser = require('')
 
 
 const router = express.Router();
-const __dirname = path.resolve();
 
-router.use((req, res, next) => {
-  res.locals.user = req.user;
-  next();
-});
+// router.use((req, res, next) => {
+//   res.locals.user = req.user;
+//   next();
+// });
 
 const connection = mysql.createPool({
   host     : 'localhost',
@@ -35,31 +36,35 @@ const connection = mysql.createPool({
   database : 'loginDB'
 });
 
-router.post('/login', login);
+// // will match any other path
+// router.use('/', (req, res, next) => {
+//   res.status(404).json({error : "page not found"});
+// });
+// router.post('/login', login);
 
-router.post('/signup', signup);
+// router.post('/signup', signup);
 
-router.get('/private', isAuth);
+// router.get('/private', isAuth);
 
-router.get('/public', (req, res, next) => {
-    res.status(200).json({ message: "here is your public resource" });
-});
+// router.get('/public', (req, res, next) => {
+//     res.status(200).json({ message: "here is your public resource" });
+// });
 
-router.get('/text', (req, res, next) => {
-    res.status(200).json({ message: "asdfasdf" });
-});
+// router.get('/text', (req, res, next) => {
+//     res.status(200).json({ message: "asdfasdf" });
+// });
 
-router.get("/aaa", (req, res) => {
-    res.sendFile(path.join(__dirname, "/routes", "main.html"));
-});
+// router.get("/aaa", (req, res) => {
+//     res.sendFile(path.join(__dirname, "/routes", "main.html"));
+// });
 
-router.get("/view", (req, res) => {
-    res.sendFile(path.join(__dirname, "/routes", "test.json"));
-});
+// router.get("/view", (req, res) => {
+//     res.sendFile(path.join(__dirname, "/routes", "test.json"));
+// });
 
-router.get("/vi", (req, res) => {
-  res.sendFile(path.join(__dirname, "/views", "asdf.html"));
-});
+// router.get("/vi", (req, res) => {
+//   res.sendFile(path.join(__dirname, "/views", "asdf.html"));
+// });
 
 router.get('/users', function (req, res) {
   // Connecting to the database.
@@ -132,9 +137,10 @@ const upload = multer({
 
 router.post('/goods', upload.single('img'), async (req, res, next) => {
   try {
-    const { name, price } = req.body;
+    const { ownerId, name, price } = req.body;
     const good = await Good.create({
-      name,
+      // ownerId: req.user.id,
+      name, 
       img: null,
       price,
     });
@@ -225,9 +231,4 @@ router.post('/goods/:id/bid', async (req, res, next) => {
   }
 });
 
-// will match any other path
-router.use('/', (req, res, next) => {
-    res.status(404).json({error : "page not found"});
-});
-
-export default router;
+module.exports = router;

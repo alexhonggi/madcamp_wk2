@@ -1,10 +1,12 @@
-import bcrypt from 'bcryptjs';
+const express = require('express');
+const bcrypt = require('bcryptjs');
+// import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
+const { User } = require('../models');
 
-import jwt from 'jsonwebtoken';
+const router = express.Router();
 
-import User from '../models/user.js';
-
-const signup = (req, res, next) => {
+router.post('/signup', async (req, res, next) => {
     // checks if email already exists
     User.findOne({ where : {
         email: req.body.email, 
@@ -20,7 +22,7 @@ const signup = (req, res, next) => {
                 } else if (passwordHash) {
                     return User.create(({
                         email: req.body.email,
-                        name: req.body.name,
+                        nick: req.body.nick,
                         password: passwordHash,
                     }))
                     .then(() => {
@@ -41,9 +43,10 @@ const signup = (req, res, next) => {
     .catch(err => {
         console.log('error', err);
     });
-};
+});
 
-const login = (req, res, next) => {
+router.post('/login', (req, res, next) => {
+    console.log("로그인 시도 중...")
     // checks if email exists
     User.findOne({ where : {
         email: req.body.email, 
@@ -59,6 +62,8 @@ const login = (req, res, next) => {
                 } else if (compareRes) { // password match
                     const token = jwt.sign({ email: req.body.email }, 'secret', { expiresIn: '1h' });
                     res.status(200).json({message: "user logged in", "token": token});
+                    // res.render('main', { user: req.user });
+                    console.log("로그인 성공!...")
                 } else { // password doesnt match
                     res.status(401).json({message: "invalid credentials"});
                 };
@@ -68,9 +73,9 @@ const login = (req, res, next) => {
     .catch(err => {
         console.log('error', err);
     });
-};
+});
 
-const isAuth = (req, res, next) => {
+router.get('/private', (req, res, next) => {
     const authHeader = req.get("Authorization");
     if (!authHeader) {
         return res.status(401).json({ message: 'not authenticated' });
@@ -86,7 +91,10 @@ const isAuth = (req, res, next) => {
         res.status(401).json({ message: 'unauthorized' });
     } else {
         res.status(200).json({ message: 'here is your resource' });
+        console.log("제대로 전달되었습니다.")
     };
-};
+});
 
-export { signup, login, isAuth };
+// export { signup, login, isAuth };
+
+module.exports = router;
