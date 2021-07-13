@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
 import {
     View,
     Text,
@@ -10,6 +11,11 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 export default class SettingScreen extends Component{
+    
+    _navigateProfile(){
+        this.props.navigation.navigate('ProfileScreen');
+    }
+    
     _navigate(){
         this.props.navigation.navigate('SomethingScreen');
     }
@@ -27,6 +33,12 @@ export default class SettingScreen extends Component{
     }
 
     _logout(){
+        try {
+            AsyncStorage.removeItem('user_id').then(console.log('Data removed'));
+        }
+        catch(exception) {
+            console.log(exception)
+        }
         const resetAction = StackActions.reset({
             index: 0,
             key: null,
@@ -38,6 +50,11 @@ export default class SettingScreen extends Component{
     render(){
         return (
             <View style={styles.container}>
+                <TouchableOpacity 
+                    style={styles.wrapButton}
+                    onPress={this._navigateProfile.bind(this)}>
+                    <Text>🤗 My profile</Text>
+                </TouchableOpacity>
                 <TouchableOpacity 
                     style={styles.wrapButton}
                     onPress={this._navigate.bind(this)}>

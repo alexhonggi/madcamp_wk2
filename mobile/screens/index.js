@@ -6,13 +6,19 @@ import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 
 import AuthScreen from './AuthScreen';
+import AddAuction from './AddAuction';
 import HomeScreen from "./HomeScreen";
 import SettingScreen from "./SettingScreen";
 import SomethingScreen from "./SomethingScreen";
+import ProfileScreen from "./ProfileScreen";
+import DetailScreen from "./DetailScreen";
+import SplashScreen from "./SplashScreen";
 
 const HomeStack = createStackNavigator(
   {
     HomeScreen,
+    AddAuction,
+    DetailScreen
   },
   // if you need.
   // recommend custom header
@@ -27,6 +33,7 @@ const SettingStack = createStackNavigator(
   {
     SettingScreen,
     SomethingScreen,
+    ProfileScreen
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -71,6 +78,13 @@ const TabNavigator = createBottomTabNavigator(
 );
 
 const AppStack = createStackNavigator({
+    SplashScreen:{
+      screen:SplashScreen,
+      navigationOptions: ({navigation}) => ({
+        headerShown: false,
+        //title: "Authentification",
+      })
+    },
     AuthScreen: {
         screen: AuthScreen,
         navigationOptions: ({navigation}) => ({
